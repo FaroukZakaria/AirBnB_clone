@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import uuid
 from datetime import datetime
-import storage
+from . import storage
 """Creating a super class which subclasses would inherit from"""
 
 
