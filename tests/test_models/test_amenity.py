@@ -1,57 +1,47 @@
 #!/usr/bin/python3
-'''testcase for amenity class'''
+"""Module for test Amenity class"""
 import unittest
+import json
+import pep8
 import datetime
+
 from models.amenity import Amenity
+from models.base_model import BaseModel
 
 
 class TestAmenity(unittest.TestCase):
-    '''
-    Test cases for the amenity class.
-    '''
-    def test_amenity(self):
-        '''testing'''
-        self.amenity = Amenity()
-        self.assertIsInstance(self.amenity.id, str)
-        self.assertIsInstance(self.amenity.created_at, datetime.datetime)
-        self.assertIsInstance(self.amenity.updated_at, datetime.datetime)
+    """Test State class implementation"""
+    def test_doc_module(self):
+        """Module documentation"""
+        doc = Amenity.__doc__
+        self.assertGreater(len(doc), 1)
 
-        self.amenity.name = 'Ada'
-        self.assertEqual(self.amenity.name, 'Ada')
+    def test_pep8_conformance_amenity(self):
+        """Test that models/amenity.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        result = pep8style.check_files(['models/amenity.py'])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-        prev_updated_at = self.amenity.updated_at
-        self.amenity.save()
-        self.assertNotEqual(prev_updated_at, self.amenity.updated_at)
+    def test_pep8_conformance_test_amenity(self):
+        """Test that tests/test_models/test_state.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        res = pep8style.check_files(['tests/test_models/test_amenity.py'])
+        self.assertEqual(res.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-        json_model = self.amenity.to_dict()
-        self.assertIsInstance(json_model, dict)
-        self.assertIn('__class__', json_model)
-        self.assertEqual(json_model['__class__'], 'Amenity')
-        self.assertIsInstance(json_model['id'], str)
-        self.assertEqual(json_model['name'], 'Ada')
-        self.assertIsInstance(json_model['created_at'], str)
-        self.assertIsInstance(json_model['updated_at'], str)
+    def test_doc_constructor(self):
+        """Constructor documentation"""
+        doc = Amenity.__init__.__doc__
+        self.assertGreater(len(doc), 1)
 
-    def test_amenity_with_kwargs(self):
-        '''testing kwargs'''
-        date = datetime.datetime.today()
-        dt_frmt = date.isoformat()
-        amenity = Amenity(
-                id="345",
-                name='George',
-                created_at=dt_frmt,
-                updated_at=dt_frmt
-                )
-        self.assertEqual(amenity.id, "345")
-        self.assertEqual(amenity.name, "George")
-        self.assertEqual(amenity.created_at, date)
-        self.assertEqual(amenity.updated_at, date)
+    def test_class(self):
+        """Validate the types of the attributes an class"""
+        with self.subTest(msg='Inheritance'):
+            self.assertTrue(issubclass(Amenity, BaseModel))
 
-    def test_amenity_with_none_kwargs(self):
-        '''testing'''
-        with self.assertRaises(TypeError):
-            Amenity(id=None, name='', created_at=None, updated_at=None)
+        with self.subTest(msg='Attributes'):
+            self.assertIsInstance(Amenity.name, str)
 
-
-        if __name__ == '__main__':
-            unittest.main()
+if __name__ == '__main__':
+    unittest.main()

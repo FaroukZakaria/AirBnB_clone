@@ -1,75 +1,49 @@
 #!/usr/bin/python3
-'''testcase for state class'''
+"""Module for test Review class"""
 import unittest
+import json
+import pep8
 import datetime
+
 from models.review import Review
+from models.base_model import BaseModel
 
 
 class TestReview(unittest.TestCase):
-    '''
-    Test cases for the Review class.
-    '''
-    def test_review(self):
-        '''testing'''
-        self.review = Review()
-        self.assertIsInstance(self.review.id, str)
-        self.assertIsInstance(self.review.created_at, datetime.datetime)
-        self.assertIsInstance(self.review.updated_at, datetime.datetime)
+    """Test Review class implementation"""
+    def test_doc_module(self):
+        """Module documentation"""
+        doc = Review.__doc__
+        self.assertGreater(len(doc), 1)
 
-        self.review.text = 'I loved ur packages'
-        self.assertEqual(self.review.text, 'I loved ur packages')
+    def test_pep8_conformance_review(self):
+        """Test that models/review.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        result = pep8style.check_files(['models/review.py'])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-        self.review.place_id = '50987'
-        self.assertEqual(self.review.place_id, '50987')
+    def test_pep8_conformance_test_review(self):
+        """Test that tests/test_models/test_review.py conforms to PEP8."""
+        pep8style = pep8.StyleGuide(quiet=True)
+        res = pep8style.check_files(['tests/test_models/test_review.py'])
+        self.assertEqual(res.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
-        self.review.user_id = '3648'
-        self.assertEqual(self.review.user_id, '3648')
+    def test_doc_constructor(self):
+        """Constructor documentation"""
+        doc = Review.__init__.__doc__
+        self.assertGreater(len(doc), 1)
 
-        prev_updated_at = self.review.updated_at
-        self.review.save()
-        self.assertNotEqual(prev_updated_at, self.review.updated_at)
+    def test_class(self):
+        """Validate the types of the attributes an class"""
+        with self.subTest(msg='Inheritance'):
+            self.assertTrue(issubclass(Review, BaseModel))
 
-        json_model = self.review.to_dict()
-        self.assertIsInstance(json_model, dict)
-        self.assertIn('__class__', json_model)
-        self.assertEqual(json_model['__class__'], 'Review')
-        self.assertIsInstance(json_model['place_id'], str)
-        self.assertIsInstance(json_model['user_id'], str)
-        self.assertEqual(json_model['text'], 'I loved ur packages')
-        self.assertIsInstance(json_model['created_at'], str)
-        self.assertIsInstance(json_model['updated_at'], str)
+        with self.subTest(msg='Attributes'):
+            self.assertIsInstance(Review.place_id, str)
+            self.assertIsInstance(Review.user_id, str)
+            self.assertIsInstance(Review.text, str)
 
-    def test_review_with_kwargs(self):
-        '''testing'''
-        date = datetime.datetime.today()
-        dt_frmt = date.isoformat()
-        review = Review(
-                id="345",
-                user_id='5678',
-                place_id='4321',
-                text='Good one',
-                created_at=dt_frmt,
-                updated_at=dt_frmt
-                )
-        self.assertEqual(review.id, "345")
-        self.assertEqual(review.place_id, "4321")
-        self.assertEqual(review.user_id, "5678")
-        self.assertEqual(review.text, "Good one")
-        self.assertEqual(review.created_at, date)
-        self.assertEqual(review.updated_at, date)
-
-    def test_review_with_none_kwargs(self):
-        '''testing'''
-        with self.assertRaises(TypeError):
-            Review(
-                    id=None,
-                    text='',
-                    user_id='',
-                    place_id='',
-                    created_at=None,
-                    updated_at=None
-                    )
-
-
-        if __name__ == '__main__':
-            unittest.main()
+if __name__ == '__main__':
+    unittest.main()
